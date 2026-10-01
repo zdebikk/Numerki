@@ -42,7 +42,6 @@ def computeL2Error(u,X,T,refElement):
     L2err = np.sqrt(L2err)
     return L2err
 
-
 def computeH1Error(u,X,T,refElement):
  
     nIP = refElement.nIP # Number of integration points
@@ -66,19 +65,23 @@ def computeH1Error(u,X,T,refElement):
             grad = np.linalg.solve(J, grad_ref)
             Nx_ip = grad[0,:] 
             Ny_ip = grad[1,:]
-
-            x_ip = N_ip@Xe
-            x_ip.shape =(1,2)
-            u_ex_ip,ux_ex_ip,uy_ex_ip = exactSol(x_ip)
             
             # numerical solution
             u_ip = N_ip@ue
+            # exact solution
+            x_ip = N_ip@Xe
+            x_ip.shape =(1,2)
+            u_ex_ip, ux_ex_ip, uy_ex_ip = exactSol(x_ip)
+            
+            # numerical solution AND numerical gradients
+            u_ip = N_ip @ ue
+            ux_ip = Nx_ip @ ue  # Obliczenie pochodnej numerycznej wzgledem X
+            uy_ip = Ny_ip @ ue  # Obliczenie pochodnej numerycznej wzgledem Y
+            
             # error
-            H1err = H1err + (u_ip - u_ex_ip)**2*dvolu + ((Nx_ip - ux_ex_ip)**2*dvolu + (Ny_ip -uy_ex_ip)**2*dvolu)
+            H1err = H1err + ((u_ip - u_ex_ip)**2 + (ux_ip - ux_ex_ip)**2 + (uy_ip - uy_ex_ip)**2) * dvolu
     H1err = np.sqrt(H1err)
     return H1err
-
-
 
 def computeL2ErrorStokes(sol,X,T,Xp,Tp,refElement):
     nOfNodes=X.shape[0]
