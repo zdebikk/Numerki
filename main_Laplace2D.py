@@ -26,7 +26,7 @@ degree = 1
 referenceElement = defineRefElement(elementType, degree)
 
 # Creation of the mesh
-nx = 8; ny = nx; h = max(domain[1]-domain[0],domain[3]-domain[2])/nx; # Number of elements in each direction and element size 
+nx = 4; ny = nx; h = max(domain[1]-domain[0],domain[3]-domain[2])/nx; # Number of elements in each direction and element size 
 print('Number of elements',np.array([nx,ny]))
 X,T = UniformRectangleMesh(domain,nx,ny,referenceElement)
 if do_plot == 1:
@@ -55,6 +55,10 @@ u = findSolution_SystemReduction(K,f,nodesDir,valDir)
 # L2 error computation
 L2Error = computeL2Error(u,X,T,referenceElement)
 print('L2 error: ', L2Error)
+
+# H1 error computation
+H1Error = computeH1Error(u,X,T,referenceElement)
+print('H1 error: ', H1Error)
     
 
 nOfNodes = np.shape(X)[0]

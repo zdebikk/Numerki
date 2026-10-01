@@ -59,6 +59,21 @@ def defineRefElement(elementType, degree):
         refElement.N = np.block([eta,1-xi-eta, xi])
         refElement.Nxi = np.block([zeroMat,-oneMat, oneMat])
         refElement.Neta = np.block([oneMat,-oneMat, zeroMat])
+    elif elementType == 1 and degree == 2:
+        #TODO - nizaimplementowane jeszcze tylko ściągnięte  z  poprzedniego
+        refElement.nOfElementNodes = 3
+        refElement.nodesCoord = np.array([[0,1],[0,0], [1,0]])
+        a = 1/2; b = 1/6
+        z = np.array([[a,a],[a,0], [0,a]])
+        refElement.integrationPoints = z
+        refElement.integrationWeights = np.array([b,b,b])
+        refElement.nIP = 3
+        xi = z[:,[0]]; eta = z[:,[1]]
+        zeroMat = np.reshape(np.zeros(len(xi)),(len(xi),1))
+        oneMat = np.reshape(np.ones(len(xi)),(len(xi),1))
+        refElement.N = np.block([eta,1-xi-eta, xi])
+        refElement.Nxi = np.block([zeroMat,-oneMat, oneMat])
+        refElement.Neta = np.block([oneMat,-oneMat, zeroMat])
     else:
         print('Not implemented element')
         sys.exit() 

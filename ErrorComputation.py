@@ -43,6 +43,43 @@ def computeL2Error(u,X,T,refElement):
     return L2err
 
 
+def computeH1Error(u,X,T,refElement):
+ 
+    nIP = refElement.nIP # Number of integration points
+    wIP = refElement.integrationWeights 
+    N    = refElement.N # Basis functions and derivatives at Gauss points
+    Nxi  = refElement.Nxi 
+    Neta = refElement.Neta 
+    H1err = 0
+    nOfElements = T.shape[0]
+    for e in np.arange(nOfElements):
+        Te = T[e,:]
+        Xe = X[Te]
+        ue = u[Te]
+        for ip in np.arange(nIP):
+            N_ip = N[ip,:]
+            Nxi_ip = Nxi[ip,:] 
+            Neta_ip = Neta[ip,:]
+            J = np.array([ [ Nxi_ip@Xe[:,0], Nxi_ip@Xe[:,1]], [Neta_ip@Xe[:,0], Neta_ip@Xe[:,1]]])
+            dvolu = wIP[ip]*np.linalg.det(J)
+            grad_ref = np.vstack((Nxi_ip, Neta_ip)) 
+            grad = np.linalg.solve(J, grad_ref)
+            Nx_ip = grad[0,:] 
+            Ny_ip = grad[1,:]
+
+            x_ip = N_ip@Xe
+            x_ip.shape =(1,2)
+            u_ex_ip,ux_ex_ip,uy_ex_ip = exactSol(x_ip)
+            
+            # numerical solution
+            u_ip = N_ip@ue
+            # error
+            H1err = H1err + (u_ip - u_ex_ip)**2*dvolu + ((Nx_ip - ux_ex_ip)**2*dvolu + (Ny_ip -uy_ex_ip)**2*dvolu)
+    H1err = np.sqrt(H1err)
+    return H1err
+
+
+
 def computeL2ErrorStokes(sol,X,T,Xp,Tp,refElement):
     nOfNodes=X.shape[0]
     ux=sol[:nOfNodes]; uy=sol[nOfNodes:2*nOfNodes]; p=sol[2*nOfNodes:]
