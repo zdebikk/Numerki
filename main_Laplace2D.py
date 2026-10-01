@@ -233,7 +233,7 @@ for hs in hsarray:
 
 print('hsdata:', hsdata)
 
-x, y1, y2, y3, y4, y5, y6 = zip(*hsdata) # , y7, y8
+x, y1, y2, y3, y4, y5, y6, y7, y8 = zip(*hsdata) # 
 
 def fun(x):
     fun.name = 'log'

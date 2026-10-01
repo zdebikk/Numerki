@@ -60,20 +60,29 @@ def defineRefElement(elementType, degree):
         refElement.Nxi = np.block([zeroMat,-oneMat, oneMat])
         refElement.Neta = np.block([oneMat,-oneMat, zeroMat])
     elif elementType == 1 and degree == 2:
-        #TODO - nizaimplementowane jeszcze tylko ściągnięte  z  poprzedniego
-        refElement.nOfElementNodes = 3
-        refElement.nodesCoord = np.array([[0,1],[0,0], [1,0]])
-        a = 1/2; b = 1/6
-        z = np.array([[a,a],[a,0], [0,a]])
+        #TODO: implement this case
+        refElement.nOfElementNodes = 9
+        refElement.nodesCoord = np.array([[-1,-1],[0,-1],[1,-1],[1,0],[1,1],[0,1],[-1,1],[-1,0],[0,0]])
+        refElement.vertexNodes = np.array([0,2,4,6])
+        #nGaussPoints1D = 5;  z_aux = np.array([0,(1/3)*np.sqrt(5-2*np.sqrt(10/7)),-(1/3)*np.sqrt(5-2*np.sqrt(10/7)),(1/3)*np.sqrt(5+2*np.sqrt(10/7)),-(1/3)*np.sqrt(5+2*np.sqrt(10/7))]);     w_aux = np.array([128/225,(322+13*np.sqrt(70))/900,(322+13*np.sqrt(70))/900,(322-13*np.sqrt(70))/900,(322-13*np.sqrt(70))/900])
+        z_aux = np.array([-np.sqrt(3/5),0,np.sqrt(3/5)]);
+        nGaussPoints1D = 3
+        w_aux = np.array([5/9,8/9,5/9])
+        z = np.zeros((nGaussPoints1D**2,2))
+        w = np.zeros((nGaussPoints1D**2,1))
+        iGauss = 0
+        for i in np.arange(nGaussPoints1D):
+            for j in np.arange(nGaussPoints1D):
+                z[iGauss,:] = np.array([[z_aux[i]],[z_aux[j]]]).T
+                w[iGauss,0] = w_aux[i]*w_aux[j]
+                iGauss = iGauss+1 
         refElement.integrationPoints = z
-        refElement.integrationWeights = np.array([b,b,b])
-        refElement.nIP = 3
+        refElement.integrationWeights = w
+        refElement.nIP = nGaussPoints1D**2
         xi = z[:,[0]]; eta = z[:,[1]]
-        zeroMat = np.reshape(np.zeros(len(xi)),(len(xi),1))
-        oneMat = np.reshape(np.ones(len(xi)),(len(xi),1))
-        refElement.N = np.block([eta,1-xi-eta, xi])
-        refElement.Nxi = np.block([zeroMat,-oneMat, oneMat])
-        refElement.Neta = np.block([oneMat,-oneMat, zeroMat])
+        refElement.N = np.block([(1/4)*xi*(xi-1)*eta*(eta-1),(1/2)*(1+xi)*(1-xi)*eta*(eta-1),(1/4)*xi*(1+xi)*eta*(eta-1),(1/2)*xi*(1+xi)*(1+eta)*(1-eta),(1/4)*xi*(1+xi)*eta*(1+eta),(1/2)*(1+xi)*(1-xi)*eta*(1+eta),(1/4)*xi*(xi-1)*eta*(1+eta),(1/2)*xi*(xi-1)*(1+eta)*(1-eta),(1+xi)*(1-xi)*(1+eta)*(1-eta)])
+        refElement.Nxi = np.block([(1/2)*(xi-1/2)*eta*(eta-1),-xi*eta*(eta-1),(1/2)*(xi+1/2)*eta*(eta-1),(xi+1/2)*(1+eta)*(1-eta),(1/2)*(xi+1/2)*eta*(1+eta),-xi*eta*(1+eta),(1/2)*(xi-1/2)*eta*(1+eta),(xi-1/2)*(1+eta)*(1-eta),-2*xi*(1+eta)*(1-eta)])
+        refElement.Neta = np.block([(1/2)*xi*(xi-1)*(eta-1/2),(1+xi)*(1-xi)*(eta-1/2),(1/2)*xi*(1+xi)*(eta-1/2),-xi*(1+xi)*eta,(1/2)*xi*(1+xi)*(eta+1/2),(1+xi)*(1-xi)*(eta+1/2),(1/2)*xi*(xi-1)*(eta+1/2),-xi*(xi-1)*eta,-2*(1+xi)*(1-xi)*eta])
     else:
         print('Not implemented element')
         sys.exit() 
