@@ -26,7 +26,7 @@ degree = 1
 referenceElement = defineRefElement(elementType, degree)
 
 # Creation of the mesh
-nx = 10; ny = nx; h = max(domain[1]-domain[0],domain[3]-domain[2])/nx; # Number of elements in each direction and element size 
+nx = 20; ny = nx; h = max(domain[1]-domain[0],domain[3]-domain[2])/nx; # Number of elements in each direction and element size 
 print('Number of elements',np.array([nx,ny]))
 X,T = UniformRectangleMesh(domain,nx,ny,referenceElement)
 if do_plot == 1:
@@ -35,7 +35,7 @@ if do_plot == 1:
 # FE system assembly
 [K,f] = computeSystemLaplace(X,T,referenceElement)
 #[K,f] = computeSystemLaplaceSparse(X,T,referenceElement)
-plt.spy(K); plt.show()
+#plt.spy(K); plt.show()
 
 # Dirichlet boundary conditions
 x1 = domain[0]; x2 = domain[1]
@@ -67,12 +67,23 @@ nOfNodes = np.shape(X)[0]
 if do_plot==1:
     # Contour plot
     contourfPlot(u,X,T) 
+    plt.gcf().canvas.manager.set_window_title('Contour Plot - Numerical Solution u')
     plt.show()
     u_analytic = exactSol(X)[0].reshape(nOfNodes,1)
     contourfPlot(u_analytic,X,T)
+    plt.gcf().canvas.manager.set_window_title('Contour Plot - Analytical Solution u')
     plt.show()
     # Surface plot
     surfPlot(u,X,T)
+    plt.gcf().canvas.manager.set_window_title('Surface Plot - Numerical Solution u')
     plt.show()
     surfPlot(u_analytic,X,T)
+    plt.gcf().canvas.manager.set_window_title('Surface Plot - Analytical Solution u')
+    plt.show()
+
+    contourfPlot(u_analytic - u, X, T)
+    plt.gcf().canvas.manager.set_window_title('Contour Plot - Error u')
+    plt.show()
+    surfPlot(u_analytic - u, X, T)
+    plt.gcf().canvas.manager.set_window_title('Surface Plot - Error u')
     plt.show()

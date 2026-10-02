@@ -20,7 +20,7 @@ do_plot = 0
 # Problem definition 
 domain = np.array([0,1,0,1])
 
-hsarray = list(range(2,10))
+hsarray = list(range(2,17))
 
 
 hsdata = []
