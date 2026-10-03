@@ -20,7 +20,7 @@ do_plot = 0
 # Problem definition 
 domain = np.array([0,1,0,1])
 
-hsarray = list(range(2,17))
+hsarray = list(range(2,16))
 
 
 hsdata = []
@@ -241,18 +241,24 @@ def fun(x):
     fun.name = 'id'
     return x
 
+def fun2(x):
+    fun2.name = 'log'
+    return np.log(x)
+    fun2.name = 'id'
+    return x
+
 plt.figure(figsize=(8, 5))
-plt.plot(x, fun(y1), label='L2 S1', marker='s', linestyle='-',color='crimson')
-plt.plot(x, fun(y2), label='H1 S1', marker='s', linestyle='-',color='crimson')
-plt.plot(x, fun(y3), label='L2 T1', marker='^', linestyle='-',color='royalblue')
-plt.plot(x, fun(y4), label='H1 T1', marker='^', linestyle='-',color='royalblue')
-plt.plot(x, fun(y5), label='L2 T2', marker='v', linestyle='-',color='orange')
-plt.plot(x, fun(y6), label='H1 T2', marker='v', linestyle='-',color='orange')
-plt.plot(x, fun(y7), label='L2 S2', marker='D', linestyle='-',color='forestgreen')
-plt.plot(x, fun(y8), label='H1 S2', marker='D', linestyle='-',color='forestgreen')
+# plt.plot(fun2(x), fun(y1), label='L2 S1', marker='s', linestyle='-',color='crimson')
+# plt.plot(fun2(x), fun(y2), label='H1 S1', marker='s', linestyle='-',color='crimson')
+plt.plot(fun2(x), fun(y3), label='L2 T1', marker='^', linestyle='-',color='royalblue')
+plt.plot(fun2(x), fun(y4), label='H1 T1', marker='^', linestyle='-',color='royalblue')
+plt.plot(fun2(x), fun(y5), label='L2 T2', marker='v', linestyle='-',color='orange')
+plt.plot(fun2(x), fun(y6), label='H1 T2', marker='v', linestyle='-',color='orange')
+# plt.plot(fun2(x), fun(y7), label='L2 S2', marker='D', linestyle='-',color='forestgreen')
+# plt.plot(fun2(x), fun(y8), label='H1 S2', marker='D', linestyle='-',color='forestgreen')
 
 
-plt.xlabel('Mesh Size (1/h)')
+plt.xlabel(f'Mesh Size {fun2.name}(1/h)')
 plt.ylabel(f'{fun.name}(Errors)')
 plt.title('Errors vs. Mesh Size')
 plt.legend()
