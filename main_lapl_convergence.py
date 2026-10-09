@@ -248,13 +248,13 @@ def fun2(x):
     return x
 
 plt.figure(figsize=(8, 5))
-# plt.plot(fun2(x), fun(y1), label='L2 S1', marker='s', linestyle='-',color='crimson')
+# plt.plot(fun2(x), fun(y1), label='L2 S1', marker='s', linestyle='-_',color='crimson')
 # plt.plot(fun2(x), fun(y2), label='H1 S1', marker='s', linestyle='-',color='crimson')
-plt.plot(fun2(x), fun(y3), label='L2 T1', marker='^', linestyle='-',color='royalblue')
+plt.plot(fun2(x), fun(y3), label='L2 T1', marker='^', linestyle='--',color='royalblue')
 plt.plot(fun2(x), fun(y4), label='H1 T1', marker='^', linestyle='-',color='royalblue')
-plt.plot(fun2(x), fun(y5), label='L2 T2', marker='v', linestyle='-',color='orange')
+plt.plot(fun2(x), fun(y5), label='L2 T2', marker='v', linestyle='--',color='orange')
 plt.plot(fun2(x), fun(y6), label='H1 T2', marker='v', linestyle='-',color='orange')
-# plt.plot(fun2(x), fun(y7), label='L2 S2', marker='D', linestyle='-',color='forestgreen')
+# plt.plot(fun2(x), fun(y7), label='L2 S2', marker='D', linestyle='-_',color='forestgreen')
 # plt.plot(fun2(x), fun(y8), label='H1 S2', marker='D', linestyle='-',color='forestgreen')
 
 
