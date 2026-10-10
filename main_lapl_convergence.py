@@ -20,56 +20,65 @@ do_plot = 0
 # Problem definition 
 domain = np.array([0,1,0,1])
 
-hsarray = list(range(2,16))
+hsarray = list(range(2,15))
+
+# for exp in range(10,18):
+#     hsarray.append(int(1.3**(exp)))
 
 
-hsdata = []
+hsdata = [[_] for _ in hsarray]
+
+print("hsarray:", hsarray)
 
 
 
-print("KWADRATY 1 STOPNIA")
-for hs in hsarray:
-    # Reference element and computational mesh
-    elementType = 0 # 1 = Triangles, 0 = Quadrilaterals
-    degree = 1
-    referenceElement = defineRefElement(elementType, degree)
+# print("KWADRATY 1 STOPNIA")
+# increment = -1
+# for hs in hsarray:
+#     increment += 1
+#     # Reference element and computational mesh
+#     elementType = 0 # 1 = Triangles, 0 = Quadrilaterals
+#     degree = 1
+#     referenceElement = defineRefElement(elementType, degree)
 
-    # Creation of the mesh
-    nx = hs; ny = nx; h = max(domain[1]-domain[0],domain[3]-domain[2])/nx; # Number of elements in each direction and element size 
-    print('Number of elements',np.array([nx,ny]))
-    X,T = UniformRectangleMesh(domain,nx,ny,referenceElement)
-    if do_plot == 1:
-        plotMesh(X,T,referenceElement); plt.show()
+#     # Creation of the mesh
+#     nx = hs; ny = nx; h = max(domain[1]-domain[0],domain[3]-domain[2])/nx; # Number of elements in each direction and element size 
+#     print('Number of elements',np.array([nx,ny]))
+#     X,T = UniformRectangleMesh(domain,nx,ny,referenceElement)
+#     if do_plot == 1:
+#         plotMesh(X,T,referenceElement); plt.show()
 
-    # FE system assembly
-    [K,f] = computeSystemLaplace(X,T,referenceElement)
-    #[K,f] = computeSystemLaplaceSparse(X,T,referenceElement)
-    #plt.spy(K); plt.show()
+#     # FE system assembly
+#     [K,f] = computeSystemLaplace(X,T,referenceElement)
+#     #[K,f] = computeSystemLaplaceSparse(X,T,referenceElement)
+#     #plt.spy(K); plt.show()
 
-    # Dirichlet boundary conditions
-    x1 = domain[0]; x2 = domain[1]
-    y1 = domain[2]; y2 = domain[3]
-    tol = 1e-8
-    nodes_Left = np.where(abs(X[:,0]-x1)<tol)[0]
-    nodes_Right = np.where(abs(X[:,0]-x2)<tol)[0]
-    nodes_Bottom = np.where(abs(X[:,1]-y1)<tol)[0]
-    nodes_Top = np.where(abs(X[:,1]-y2)<tol)[0]
-    nodesDir = np.unique(np.block([nodes_Left,nodes_Right,nodes_Bottom,nodes_Top]))
-    valDir = exactSol(X[nodesDir,:])[0];valDir.shape = (len(nodesDir),1)
+#     # Dirichlet boundary conditions
+#     x1 = domain[0]; x2 = domain[1]
+#     y1 = domain[2]; y2 = domain[3]
+#     tol = 1e-8
+#     nodes_Left = np.where(abs(X[:,0]-x1)<tol)[0]
+#     nodes_Right = np.where(abs(X[:,0]-x2)<tol)[0]
+#     nodes_Bottom = np.where(abs(X[:,1]-y1)<tol)[0]
+#     nodes_Top = np.where(abs(X[:,1]-y2)<tol)[0]
+#     nodesDir = np.unique(np.block([nodes_Left,nodes_Right,nodes_Bottom,nodes_Top]))
+#     valDir = exactSol(X[nodesDir,:])[0];valDir.shape = (len(nodesDir),1)
 
-    # System reduction and solution 
-    u = findSolution_SystemReduction(K,f,nodesDir,valDir)
-    #u = findSolutionSparse_SystemReduction(K,f,nodesDir,valDir)
+#     # System reduction and solution 
+#     u = findSolution_SystemReduction(K,f,nodesDir,valDir)
+#     #u = findSolutionSparse_SystemReduction(K,f,nodesDir,valDir)
 
-    # L2 error computation
-    L2Error = computeL2Error(u,X,T,referenceElement)
-    print('L2 error: ', L2Error)
+#     # L2 error computation
+#     L2Error = computeL2Error(u,X,T,referenceElement)
+#     print('L2 error: ', L2Error)
 
-    # H1 error computation
-    H1Error = computeH1Error(u,X,T,referenceElement)
-    print('H1 error: ', H1Error)
+#     # H1 error computation
+#     H1Error = computeH1Error(u,X,T,referenceElement)
+#     print('H1 error: ', H1Error)
 
-    hsdata.append([hs,L2Error[0],H1Error[0]])
+#     hsdata[increment].append(L2Error[0])
+#     hsdata[increment].append(H1Error[0])
+
 
 print("TROJKATY 1 STOPNIA")
 increment = -1
@@ -117,6 +126,8 @@ for hs in hsarray:
 
     hsdata[increment].append(L2Error[0])
     hsdata[increment].append(H1Error[0])
+
+
 
 
 print("TROJKATY 2 STOPNIA")
@@ -167,54 +178,59 @@ for hs in hsarray:
     hsdata[increment].append(H1Error[0])
 
 
-print('hsdata:', hsdata)
 
-print("KWADRATY 2 STOPNIA")
-increment = -1
-for hs in hsarray:
-    increment += 1
-    # Reference element and computational mesh
-    elementType = 0 # 1 = Triangles, 0 = Quadrilaterals
-    degree = 2
-    referenceElement = defineRefElement(elementType, degree)
 
-    # Creation of the mesh
-    nx = hs; ny = nx; h = max(domain[1]-domain[0],domain[3]-domain[2])/nx; # Number of elements in each direction and element size 
-    print('Number of elements',np.array([nx,ny]))
-    X,T = UniformRectangleMesh(domain,nx,ny,referenceElement)
-    if do_plot == 1:
-        plotMesh(X,T,referenceElement); plt.show()
+# print("KWADRATY 2 STOPNIA")
+# increment = -1
+# for hs in hsarray:
+#     increment += 1
+#     # Reference element and computational mesh
+#     elementType = 0 # 1 = Triangles, 0 = Quadrilaterals
+#     degree = 2
+#     referenceElement = defineRefElement(elementType, degree)
 
-    # FE system assembly
-    [K,f] = computeSystemLaplace(X,T,referenceElement)
-    #[K,f] = computeSystemLaplaceSparse(X,T,referenceElement)
-    #plt.spy(K); plt.show()
+#     # Creation of the mesh
+#     nx = hs; ny = nx; h = max(domain[1]-domain[0],domain[3]-domain[2])/nx; # Number of elements in each direction and element size 
+#     print('Number of elements',np.array([nx,ny]))
+#     X,T = UniformRectangleMesh(domain,nx,ny,referenceElement)
+#     if do_plot == 1:
+#         plotMesh(X,T,referenceElement); plt.show()
 
-    # Dirichlet boundary conditions
-    x1 = domain[0]; x2 = domain[1]
-    y1 = domain[2]; y2 = domain[3]
-    tol = 1e-8
-    nodes_Left = np.where(abs(X[:,0]-x1)<tol)[0]
-    nodes_Right = np.where(abs(X[:,0]-x2)<tol)[0]
-    nodes_Bottom = np.where(abs(X[:,1]-y1)<tol)[0]
-    nodes_Top = np.where(abs(X[:,1]-y2)<tol)[0]
-    nodesDir = np.unique(np.block([nodes_Left,nodes_Right,nodes_Bottom,nodes_Top]))
-    valDir = exactSol(X[nodesDir,:])[0];valDir.shape = (len(nodesDir),1)
+#     # FE system assembly
+#     [K,f] = computeSystemLaplace(X,T,referenceElement)
+#     #[K,f] = computeSystemLaplaceSparse(X,T,referenceElement)
+#     #plt.spy(K); plt.show()
 
-    # System reduction and solution 
-    u = findSolution_SystemReduction(K,f,nodesDir,valDir)
-    #u = findSolutionSparse_SystemReduction(K,f,nodesDir,valDir)
+#     # Dirichlet boundary conditions
+#     x1 = domain[0]; x2 = domain[1]
+#     y1 = domain[2]; y2 = domain[3]
+#     tol = 1e-8
+#     nodes_Left = np.where(abs(X[:,0]-x1)<tol)[0]
+#     nodes_Right = np.where(abs(X[:,0]-x2)<tol)[0]
+#     nodes_Bottom = np.where(abs(X[:,1]-y1)<tol)[0]
+#     nodes_Top = np.where(abs(X[:,1]-y2)<tol)[0]
+#     nodesDir = np.unique(np.block([nodes_Left,nodes_Right,nodes_Bottom,nodes_Top]))
+#     valDir = exactSol(X[nodesDir,:])[0];valDir.shape = (len(nodesDir),1)
 
-    # L2 error computation
-    L2Error = computeL2Error(u,X,T,referenceElement)
-    print('L2 error: ', L2Error)
+#     # System reduction and solution 
+#     u = findSolution_SystemReduction(K,f,nodesDir,valDir)
+#     #u = findSolutionSparse_SystemReduction(K,f,nodesDir,valDir)
 
-    # H1 error computation
-    H1Error = computeH1Error(u,X,T,referenceElement)
-    print('H1 error: ', H1Error)
+#     # L2 error computation
+#     L2Error = computeL2Error(u,X,T,referenceElement)
+#     print('L2 error: ', L2Error)
 
-    hsdata[increment].append(L2Error[0])
-    hsdata[increment].append(H1Error[0])
+#     # H1 error computation
+#     H1Error = computeH1Error(u,X,T,referenceElement)
+#     print('H1 error: ', H1Error)
+
+#     hsdata[increment].append(L2Error[0])
+#     hsdata[increment].append(H1Error[0])
+
+
+
+
+
 
 
 # nOfNodes = np.shape(X)[0]
@@ -233,36 +249,38 @@ for hs in hsarray:
 
 print('hsdata:', hsdata)
 
-x, y1, y2, y3, y4, y5, y6, y7, y8 = zip(*hsdata)
+# hsdata = [[2, np.float64(0.6410725737160661), np.float64(3.93918016803861), np.float64(0.6323877383818364), np.float64(5.001707267371442)], [3, np.float64(0.7199909266191815), np.float64(3.4780028565343324), np.float64(0.2578187839505659), np.float64(5.310846236668786)], [4, np.float64(0.5024967946510979), np.float64(4.320852553232804), np.float64(0.2542965394764775), np.float64(4.394112872316398)], [5, np.float64(0.3095720577436989), np.float64(4.4367912894434385), np.float64(0.17571760055679045), np.float64(3.174680219840116)], [6, np.float64(0.19297664863230088), np.float64(4.283913466052776), np.float64(0.11882294088051241), np.float64(2.4068673882993443)], [7, np.float64(0.13565194882808013), np.float64(4.079977010394338), np.float64(0.08336093985347584), np.float64(1.9071329749194337)], [8, np.float64(0.1099642815532222), np.float64(3.8670048079598796), np.float64(0.060612068659598194), np.float64(1.5497622397359576)], [9, np.float64(0.09689887147741132), np.float64(3.656864010877931), np.float64(0.04530249528668447), np.float64(1.2816760422706583)], [10, np.float64(0.08796210778106875), np.float64(3.4554342903602784), np.float64(0.034619520072264445), np.float64(1.0755627645840486)], [11, np.float64(0.08038337613188866), np.float64(3.265747404178508), np.float64(0.026963675308169475), np.float64(0.9142084842244419)], [12, np.float64(0.07345542170735586), np.float64(3.089049032306106), np.float64(0.021357102761101678), np.float64(0.785856568713227)], [13, np.float64(0.06705632554167976),np.float64(2.9255104311484086), np.float64(0.017172694486810816), np.float64(0.6822555796060302)], [14, np.float64(0.06118782183673903), np.float64(2.774696520693026), np.float64(0.013995725733391853), np.float64(0.5975207338260018)], [13, np.float64(0.06705632554167976), np.float64(2.9255104311484086), np.float64(0.017172694486810816), np.float64(0.6822555796060302)], [17, np.float64(0.046714310059389204), np.float64(2.3904888895473855), np.float64(0.008109753279989957), np.float64(0.41918687806177113)], [23, np.float64(0.02871115775505216), np.float64(1.85109075188008), np.float64(0.003400316709395511), np.float64(0.23740837565800849)], [30, np.float64(0.01791909359722215), np.float64(1.4543708069969312), np.float64(0.0015640126027480022), np.float64(0.1422874123935962)], [39, np.float64(0.010985167244123312), np.float64(1.1353454143717616), np.float64(0.0007211333009797918), np.float64(0.08520130710859407)]]
 
-def fun(x):
-    fun.name = 'log'
-    return np.log(x)
-    fun.name = 'id'
-    return x
+# x, y3, y4, y5, y6 = zip(*hsdata)
 
-def fun2(x):
-    fun2.name = 'log'
-    return np.log(x)
-    fun2.name = 'id'
-    return x
+# def fun(x):
+#     fun.name = 'log'
+#     return np.log(x)
+#     fun.name = 'id'
+#     return x
 
-plt.figure(figsize=(8, 5))
-# plt.plot(fun2(x), fun(y1), label='L2 S1', marker='s', linestyle='-_',color='crimson')
-# plt.plot(fun2(x), fun(y2), label='H1 S1', marker='s', linestyle='-',color='crimson')
-plt.plot(fun2(x), fun(y3), label='L2 T1', marker='^', linestyle='--',color='royalblue')
-plt.plot(fun2(x), fun(y4), label='H1 T1', marker='^', linestyle='-',color='royalblue')
-plt.plot(fun2(x), fun(y5), label='L2 T2', marker='v', linestyle='--',color='orange')
-plt.plot(fun2(x), fun(y6), label='H1 T2', marker='v', linestyle='-',color='orange')
-# plt.plot(fun2(x), fun(y7), label='L2 S2', marker='D', linestyle='-_',color='forestgreen')
-# plt.plot(fun2(x), fun(y8), label='H1 S2', marker='D', linestyle='-',color='forestgreen')
+# def fun2(x):
+#     fun2.name = 'log'
+#     return np.log(x)
+#     fun2.name = 'id'
+#     return x
+
+# plt.figure(figsize=(16, 10))
+# # plt.plot(fun2(x), fun(y1), label='L2 S1', marker='s', linestyle='-_',color='crimson')
+# # plt.plot(fun2(x), fun(y2), label='H1 S1', marker='s', linestyle='-',color='crimson')
+# plt.plot(fun2(x), fun(y3), label='L2 T1', marker='^', linestyle='--',color='royalblue')
+# plt.plot(fun2(x), fun(y4), label='H1 T1', marker='^', linestyle='-',color='royalblue')
+# plt.plot(fun2(x), fun(y5), label='L2 T2', marker='v', linestyle='--',color='orange')
+# plt.plot(fun2(x), fun(y6), label='H1 T2', marker='v', linestyle='-',color='orange')
+# # plt.plot(fun2(x), fun(y7), label='L2 S2', marker='D', linestyle='-_',color='forestgreen')
+# # plt.plot(fun2(x), fun(y8), label='H1 S2', marker='D', linestyle='-',color='forestgreen')
 
 
-plt.xlabel(f'Mesh Size {fun2.name}(1/h)')
-plt.ylabel(f'{fun.name}(Errors)')
-plt.title('Errors vs. Mesh Size')
-plt.legend()
-plt.grid(True)
+# plt.xlabel(f'Mesh Size {fun2.name}(1/h)')
+# plt.ylabel(f'{fun.name}(Errors)')
+# plt.title('Errors vs. Mesh Size')
+# plt.legend()
+# plt.grid(True)
 
-# Wyświetlenie
-plt.show()
+# # Wyświetlenie
+# plt.show()
