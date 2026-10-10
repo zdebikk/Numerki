@@ -21,12 +21,12 @@ do_plot = 1
 domain = np.array([0,1,0,1])
 
 
-elementType = 0 # 1 = Triangles, 0 = Quadrilaterals
-degree = 1
+elementType = 1 # 1 = Triangles, 0 = Quadrilaterals
+degree = 2
 referenceElement = defineRefElement(elementType, degree)
 
 # Creation of the mesh
-nx = 20; ny = nx; h = max(domain[1]-domain[0],domain[3]-domain[2])/nx; # Number of elements in each direction and element size 
+nx = 2; ny = nx; h = max(domain[1]-domain[0],domain[3]-domain[2])/nx; # Number of elements in each direction and element size 
 print('Number of elements',np.array([nx,ny]))
 X,T = UniformRectangleMesh(domain,nx,ny,referenceElement)
 if do_plot == 1:
@@ -68,10 +68,13 @@ if do_plot==1:
     # Contour plot
     contourfPlot(u,X,T) 
     plt.gcf().canvas.manager.set_window_title('Contour Plot - Numerical Solution u')
+    plt.savefig('Figure_ns.png', dpi=300, bbox_inches='tight')
     plt.show()
+    
     u_analytic = exactSol(X)[0].reshape(nOfNodes,1)
     contourfPlot(u_analytic,X,T)
     plt.gcf().canvas.manager.set_window_title('Contour Plot - Analytical Solution u')
+    plt.savefig('Figure_as.png', dpi=300, bbox_inches='tight')
     plt.show()
     # Surface plot
     surfPlot(u,X,T)
@@ -83,6 +86,7 @@ if do_plot==1:
 
     contourfPlot(u_analytic - u, X, T)
     plt.gcf().canvas.manager.set_window_title('Contour Plot - Error u')
+    plt.savefig('Figure_e.png', dpi=300, bbox_inches='tight')
     plt.show()
     surfPlot(u_analytic - u, X, T)
     plt.gcf().canvas.manager.set_window_title('Surface Plot - Error u')
