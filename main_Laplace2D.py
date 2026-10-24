@@ -12,6 +12,7 @@ from matplotlib import cm
 from matplotlib.ticker import LinearLocator, FormatStrFormatter
 # This library enhances some plot options
 from mpl_toolkits.mplot3d import Axes3D
+from scipy.interpolate import RegularGridInterpolator
 # Plots are shown on a new window, where we can move and zoom
 #matplotlib auto  
 
@@ -35,7 +36,7 @@ if do_plot == 1:
 # FE system assembly
 [K,f] = computeSystemLaplace(X,T,referenceElement)
 #[K,f] = computeSystemLaplaceSparse(X,T,referenceElement)
-#plt.spy(K); plt.show()
+plt.spy(K); plt.show()
 
 # Dirichlet boundary conditions
 x1 = domain[0]; x2 = domain[1]
@@ -91,3 +92,20 @@ if do_plot==1:
     surfPlot(u_analytic - u, X, T)
     plt.gcf().canvas.manager.set_window_title('Surface Plot - Error u')
     plt.show()
+
+    contourfPlot(u_analytic - u, X, T)
+    plt.gcf().canvas.manager.set_window_title('Contour Plot - Error u2v16')
+    plt.savefig('Figure_e.png', dpi=300, bbox_inches='tight')
+    plt.show()
+
+    me = 0
+    for _ in range(len(u)):
+        ce = np.abs(0*u[_] - u_analytic[_])
+        if ce > me:
+            me = ce
+            ind = _
+
+    e=u_analytic[ind]-u[ind]
+    print()
+    print(f'error {e} / u(x*) {u_analytic[ind]} = {e/u_analytic[ind]} at index: {ind} which give coordinates {X[ind]}')
+    print(len(X))

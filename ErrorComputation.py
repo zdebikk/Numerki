@@ -8,7 +8,6 @@ from analyticalInfo import *
 #from analyticalInfoStokes import *
                 
 def computeL2Error(u,X,T,refElement):
- 
     nIP = refElement.nIP # Number of integration points
     wIP = refElement.integrationWeights 
     N    = refElement.N # Basis functions and derivatives at Gauss points
