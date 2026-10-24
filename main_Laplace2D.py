@@ -13,30 +13,37 @@ from matplotlib.ticker import LinearLocator, FormatStrFormatter
 # This library enhances some plot options
 from mpl_toolkits.mplot3d import Axes3D
 from scipy.interpolate import RegularGridInterpolator
+import scipy.sparse as sp
 # Plots are shown on a new window, where we can move and zoom
 #matplotlib auto  
 
-do_plot = 1
+do_plot = 0
 
 # Problem definition 
 domain = np.array([0,1,0,1])
 
 
 elementType = 1 # 1 = Triangles, 0 = Quadrilaterals
-degree = 2
+degree = 1
 referenceElement = defineRefElement(elementType, degree)
 
 # Creation of the mesh
 nx = 2; ny = nx; h = max(domain[1]-domain[0],domain[3]-domain[2])/nx; # Number of elements in each direction and element size 
 print('Number of elements',np.array([nx,ny]))
 X,T = UniformRectangleMesh(domain,nx,ny,referenceElement)
-if do_plot == 1:
-    plotMesh(X,T,referenceElement); plt.show()
+# plotMesh(X,T,referenceElement); plt.show()
 
 # FE system assembly
 [K,f] = computeSystemLaplace(X,T,referenceElement)
 #[K,f] = computeSystemLaplaceSparse(X,T,referenceElement)
-plt.spy(K); plt.show()
+plt.spy(K, markersize=26, color='black') 
+#ORANGE SPARSITY
+K_orange = sp.lil_matrix(K.shape) if sp.issparse(K) else np.zeros(K.shape)
+idx = [0, 1, 3]
+grid = np.ix_(idx, idx)
+K_orange[grid] = K[grid]
+plt.spy(K_orange, markersize=13, color='orange')
+plt.show()
 
 # Dirichlet boundary conditions
 x1 = domain[0]; x2 = domain[1]
@@ -100,7 +107,7 @@ if do_plot==1:
 
     me = 0
     for _ in range(len(u)):
-        ce = np.abs(0*u[_] - u_analytic[_])
+        ce = np.abs(u[_] - u_analytic[_])
         if ce > me:
             me = ce
             ind = _
