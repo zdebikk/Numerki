@@ -58,7 +58,8 @@ nodes_Right = np.where(abs(X[:,0]-x2)<tol)[0]
 nodes_Bottom = np.where(abs(X[:,1]-y1)<tol)[0]
 nodes_Top = np.where(abs(X[:,1]-y2)<tol)[0]
 nodesDir = np.unique(np.block([nodes_Left,nodes_Right,nodes_Bottom,nodes_Top]))
-valDir = exactSol(X[nodesDir,:])[0];valDir.shape = (len(nodesDir),1)
+valDir = exactSol(X[nodesDir,:])[0]
+valDir.shape = (len(nodesDir),1)
 
 # System reduction and solution 
 u = findSolution_SystemReduction(K,f,nodesDir,valDir)

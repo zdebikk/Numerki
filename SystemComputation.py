@@ -8,6 +8,27 @@ import matplotlib.tri as mtri
 from analyticalInfo import *
 #from analyticalInfoCavityFlowStokes import *
 
+def findSolution_LagrangeMultipliers(K, f, nodesDir, valDir):
+    nNodes = K.shape[0]
+    nDir = len(nodesDir)
+    
+    C = np.zeros((nDir, nNodes))
+    for i, node in enumerate(nodesDir):
+        C[i, node] = 1.0
+        
+    K_block = np.block([
+        [K, C.T],
+        [C, np.zeros((nDir, nDir))]
+    ])
+    f_block = np.vstack((f, valDir))
+    
+    sol = np.linalg.solve(K_block, f_block)
+    
+    u_lag = sol[:nNodes]
+    lambda_lag = sol[nNodes:]
+    
+    return u_lag, lambda_lag
+
 def findSolution_SystemReduction(K,f,nodesDir,valDir):
     nOfNodes = K.shape[0]
     nodesUnk = np.setdiff1d(np.arange(nOfNodes),nodesDir)
@@ -44,6 +65,23 @@ def computeSystemLaplace(X,T,refElt):
         Te = T[e,:]
         Xe = X[Te,:]
         Ke,fe = elementMatrices(Xe,refElt)
+        for i in np.arange(len(Te)):
+            f[Te[i]] = f[Te[i]] + fe[i]
+            for j in np.arange(len(Te)):
+                K[Te[i],Te[j]] = K[Te[i],Te[j]] + Ke[i,j]  
+    return K, f
+
+def computeSystemPorousMedia(X,T,refElt):
+    # Initialise system matrix and rhs vector
+    nOfNodes = X.shape[0]
+    nOfElements = T.shape[0]
+    K = np.zeros((nOfNodes,nOfNodes))
+    f = np.zeros((nOfNodes,1))
+    # loop in elements to obtain the system of equations
+    for e in np.arange(nOfElements):
+        Te = T[e,:]
+        Xe = X[Te,:]
+        Ke,fe = elementMatricesPorousMedia(Xe,refElt)
         for i in np.arange(len(Te)):
             f[Te[i]] = f[Te[i]] + fe[i]
             for j in np.arange(len(Te)):
@@ -91,6 +129,28 @@ def elementMatrices(Xe,refElement):
         Ke = Ke + (np.outer(Nx_ip,Nx_ip) + np.outer(Ny_ip,Ny_ip))*w_ip 
         fe = fe + N_ip*sourceTerm(xy_ip)*w_ip
     return Ke,fe 
+
+def elementMatricesPorousMedia(Xe, refElement):
+    nOfElementNodes = refElement.nOfElementNodes 
+    nIP = refElement.nIP
+    wIP = refElement.integrationWeights 
+    N    = refElement.N
+    Nxi  = refElement.Nxi 
+    Neta = refElement.Neta 
+    
+    K1 = 1e-6
+    K2 = 1e-7
+    
+    Ke = np.zeros((nOfElementNodes, nOfElementNodes))
+    fe = np.zeros(nOfElementNodes) 
+    
+    for ip in np.arange(nIP): 
+        N_ip = N[ip,:]
+        [Nx_ip, Ny_ip, xy_ip, w_ip] = applyIsoparametricTransformation(N_ip, Nxi[ip,:], Neta[ip,:], Xe, wIP[ip])
+        
+        Ke = Ke + (K1 * np.outer(Nx_ip, Nx_ip) + K2 * np.outer(Ny_ip, Ny_ip)) * w_ip 
+        
+    return Ke, fe
 
 # Isoparametric transformation at 1 integration point
 def applyIsoparametricTransformation(N_ip,Nxi_ip,Neta_ip,Xe,w_ip):

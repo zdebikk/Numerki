@@ -12,6 +12,14 @@ def exactSol(X):
     u_y = (1/2000)*h1*dh2
     return u,u_x,u_y
 
+def exactSol2(X):
+    x = X[:,0]
+    y = X[:,1]
+    u = y
+    u_x = 0
+    u_y = 0
+    return u,u_x,u_y
+
 def sourceTerm(X):
     x = X[0]
     y = X[1]
