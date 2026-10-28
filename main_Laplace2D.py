@@ -17,20 +17,24 @@ import scipy.sparse as sp
 # Plots are shown on a new window, where we can move and zoom
 #matplotlib auto  
 
-do_plot = 0
+plt.rcParams['savefig.dpi'] = 300
+
+
+do_plot = 1
 
 # Problem definition 
 domain = np.array([0,1,0,1])
 
 
 elementType = 1 # 1 = Triangles, 0 = Quadrilaterals
-degree = 1
+degree = 2
 referenceElement = defineRefElement(elementType, degree)
 
 # Creation of the mesh
 nx = 2; ny = nx; h = max(domain[1]-domain[0],domain[3]-domain[2])/nx; # Number of elements in each direction and element size 
 print('Number of elements',np.array([nx,ny]))
 X,T = UniformRectangleMesh(domain,nx,ny,referenceElement)
+
 # plotMesh(X,T,referenceElement); plt.show()
 
 # FE system assembly
@@ -71,6 +75,7 @@ print('H1 error: ', H1Error)
 
 
 
+
 nOfNodes = np.shape(X)[0]
 if do_plot==1:
     # Contour plot
@@ -78,8 +83,9 @@ if do_plot==1:
     plt.gcf().canvas.manager.set_window_title('Contour Plot - Numerical Solution u')
     plt.savefig('Figure_ns.png', dpi=300, bbox_inches='tight')
     plt.show()
-    
+
     u_analytic = exactSol(X)[0].reshape(nOfNodes,1)
+
     contourfPlot(u_analytic,X,T)
     plt.gcf().canvas.manager.set_window_title('Contour Plot - Analytical Solution u')
     plt.savefig('Figure_as.png', dpi=300, bbox_inches='tight')
@@ -100,19 +106,15 @@ if do_plot==1:
     plt.gcf().canvas.manager.set_window_title('Surface Plot - Error u')
     plt.show()
 
-    contourfPlot(u_analytic - u, X, T)
-    plt.gcf().canvas.manager.set_window_title('Contour Plot - Error u2v16')
-    plt.savefig('Figure_e.png', dpi=300, bbox_inches='tight')
-    plt.show()
+me = 0
+for _ in range(len(u)):
+    ce = np.abs(u[_] - u_analytic[_])
+    if ce > me:
+        me = ce
+        ind = _
 
-    me = 0
-    for _ in range(len(u)):
-        ce = np.abs(u[_] - u_analytic[_])
-        if ce > me:
-            me = ce
-            ind = _
 
-    e=u_analytic[ind]-u[ind]
-    print()
-    print(f'error {e} / u(x*) {u_analytic[ind]} = {e/u_analytic[ind]} at index: {ind} which give coordinates {X[ind]}')
-    print(len(X))
+e=u_analytic[ind]-u[ind]
+print()
+print(f'error {e} / u(x*) {u_analytic[ind]} = {e/u_analytic[ind]} at index: {ind} which give coordinates {X[ind]}')
+print(len(X))
