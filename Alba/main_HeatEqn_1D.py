@@ -18,8 +18,9 @@ Tf = 0.2  # Final time
 degree=1
 refElement=defineRefElement1D(degree)
 
+RESOL_OF_SPACE_DOMAIN = 15 # Number of elements in the space domain
 # Computational mesh
-domain = np.array([0,1]); nOfElements=10; h = 1/nOfElements
+domain = np.array([0,1]); nOfElements=RESOL_OF_SPACE_DOMAIN; h = 1/nOfElements
 X,T=uniform1dMesh(domain[0],domain[1],nOfElements,degree)
 
 # System of ODE
