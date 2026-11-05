@@ -78,10 +78,11 @@ u_SolExp_BE[:,0] = inCond
 for k in np.arange(timeIterationsExp-1):
     tk = timeVec[k]
     tk1 = timeVec[k+1]
-    aux1 = -nu*K_red@u_SolExp_BE[1:nOfNodes-1,k]; aux1.shape = (nOfNodes-2,1)
-    f_2 = aux1 + f_red
-    aux = np.linalg.solve(M_red,f_2); aux.shape = nOfNodes-2
-    u_SolExp_BE[1:nOfNodes-1,k+1] = u_SolExp_BE[1:nOfNodes-1,k] + timeStep*aux
+    aux1 = M_red@u_SolExp_BE[1:nOfNodes-1,k]; aux1.shape = (nOfNodes-2,1)
+    f_2 = aux1 + f_red*timeStep
+    BEMATRIX = M_red + timeStep*nu*K_red
+    aux = np.linalg.solve(BEMATRIX,f_2); aux.shape = nOfNodes-2
+    u_SolExp_BE[1:nOfNodes-1,k+1] = aux
 
 #a
 print(u_SolExp[:,0])
@@ -89,10 +90,10 @@ print(u_SolExp[5,0])
 print(u_SolExp[5,20])
 print(u_SolExp[5,timeIterationsExp-1]) #solution at final time
 
-num = 15
-for k in np.arange(round(timeIterationsExp/num)):
-    plt.plot(X,u_SolExp[:,num*k],'-o')
-plt.show()
+# num = 15
+# for k in np.arange(round(timeIterationsExp/num)):
+#     plt.plot(X,u_SolExp[:,num*k],'-o')
+# plt.show()
 
 plt.imshow(u_SolExp ,aspect='auto', cmap='viridis')
 plt.colorbar()
