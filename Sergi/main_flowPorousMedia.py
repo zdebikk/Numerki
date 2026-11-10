@@ -1,10 +1,10 @@
 import numpy as np
 import scipy.io as sio
 import matplotlib.pyplot as plt
-from Sergi.MeshingFunctions import *
-from Sergi.PlottingFunctions import *
-from Sergi.ReferenceElement import * 
-from Sergi.SystemComputation import *
+from MeshingFunctions import *
+from PlottingFunctions import *
+from ReferenceElement import * 
+from SystemComputation import *
 
 plt.rcParams['savefig.dpi'] = 300
 

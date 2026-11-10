@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from matplotlib import cm
 import matplotlib.tri as mtri
 #from analyticalInfo2 import *
-from Sergi.analyticalInfo import *
+from analyticalInfo import *
 #from analyticalInfoStokes import *
                 
 def computeL2Error(u,X,T,refElement):

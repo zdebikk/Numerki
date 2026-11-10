@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from matplotlib import cm
 import matplotlib.tri as mtri
 #from analyticalInfo2 import *
-from Sergi.analyticalInfo import *
+from analyticalInfo import *
 #from analyticalInfoCavityFlowStokes import *
 
 def findSolution_LagrangeMultipliers(K, f, nodesDir, valDir):

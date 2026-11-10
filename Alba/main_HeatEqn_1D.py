@@ -71,7 +71,7 @@ for k in np.arange(timeIterationsExp-1):
     aux = np.linalg.solve(M_red,f_2); aux.shape = nOfNodes-2
     u_SolExp[1:nOfNodes-1,k+1] = u_SolExp[1:nOfNodes-1,k] + timeStep*aux
 
-#Backward Euler
+#Backward Euler (implicit)
 u_SolExp_BE = np.zeros((nOfNodes,timeIterationsExp))
 u_SolExp_BE[:,0] = inCond
 
